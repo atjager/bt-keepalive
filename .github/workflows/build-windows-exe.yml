@@ -1,0 +1,37 @@
+name: Build Windows EXE
+
+# Runs on every push to main, and can also be triggered manually from the
+# Actions tab in GitHub ("Run workflow" button).
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "bt_keepalive.py"
+      - ".github/workflows/build-windows-exe.yml"
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PyInstaller
+        run: pip install pyinstaller
+
+      - name: Build EXE
+        run: pyinstaller --onefile --noconsole --name bt_keepalive bt_keepalive.py
+
+      - name: Upload EXE as build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bt_keepalive-windows-exe
+          path: dist/bt_keepalive.exe
+          retention-days: 30
