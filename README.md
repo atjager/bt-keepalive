@@ -1,6 +1,6 @@
 # BT Keep-Alive
 
-Prevents Bluetooth speakers from auto-disconnecting by continuously looping a short, quiet tone through the default Windows playback device - the audio stream never actually closes, which matters for speakers that auto-off when the stream stops rather than on a pure silence timer.
+Prevents Bluetooth speakers from auto-disconnecting by continuously looping a near-inaudible tone (18.5kHz, 2% volume) through the default Windows playback device - the audio stream never actually closes, which matters for speakers that auto-off when the stream stops rather than on a pure silence timer.
 
 ## Files
 - `bt_keepalive.py` — background worker, loops `tone.wav` continuously

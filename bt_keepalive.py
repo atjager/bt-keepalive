@@ -22,9 +22,9 @@ import logging
 
 # ---- Configuration ----
 HEARTBEAT_SECONDS = 300     # safety net: re-assert the loop this often in case playback ever stops
-TONE_FREQUENCY_HZ = 880     # audible tone (A5) - swap lower/quieter once confirmed working
+TONE_FREQUENCY_HZ = 18500   # near-ultrasonic - inaudible to most adults, confirmed working in production
 TONE_DURATION_MS = 150      # length of one loop cycle
-TONE_AMPLITUDE = 0.15       # fraction of max volume (0.0-1.0)
+TONE_AMPLITUDE = 0.02       # fraction of max volume (0.0-1.0) - confirmed working in production
 SAMPLE_RATE = 44100
 LOG_FILE = os.path.join(tempfile.gettempdir(), "bt_keepalive.log")
 
