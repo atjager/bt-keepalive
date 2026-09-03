@@ -7,6 +7,7 @@ on:
       - "bt_keepalive.py"
       - "installer.py"
       - "uninstall.py"
+      - "tone.wav"
       - ".github/workflows/build-windows-exe.yml"
   workflow_dispatch: {}
 
@@ -36,8 +37,8 @@ jobs:
       - name: Build background worker EXE
         run: pyinstaller --onefile --noconsole --name bt_keepalive bt_keepalive.py
 
-      - name: Build installer EXE (bundles worker + nssm)
-        run: pyinstaller --onefile --name bt_keepalive_installer --add-binary "dist\bt_keepalive.exe;." --add-binary "nssm.exe;." installer.py
+      - name: Build installer EXE (bundles worker + nssm + default tone)
+        run: pyinstaller --onefile --name bt_keepalive_installer --add-binary "dist\bt_keepalive.exe;." --add-binary "nssm.exe;." --add-binary "tone.wav;." installer.py
 
       - name: Build uninstaller EXE
         run: pyinstaller --onefile --name bt_keepalive_uninstall uninstall.py

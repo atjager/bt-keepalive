@@ -61,9 +61,15 @@ def main():
 
     keepalive_dst = os.path.join(INSTALL_DIR, "bt_keepalive.exe")
     nssm_dst = os.path.join(INSTALL_DIR, "nssm.exe")
+    tone_dst = os.path.join(INSTALL_DIR, "tone.wav")
 
     shutil.copy2(resource_path("bt_keepalive.exe"), keepalive_dst)
     shutil.copy2(resource_path("nssm.exe"), nssm_dst)
+
+    # Only copy the bundled default tone if one isn't already there - this
+    # lets a re-install preserve a custom tone.wav you've since swapped in.
+    if not os.path.exists(tone_dst):
+        shutil.copy2(resource_path("tone.wav"), tone_dst)
 
     # Clean up any previous install (ignore errors if the service doesn't exist yet)
     run([nssm_dst, "stop", SERVICE_NAME])
