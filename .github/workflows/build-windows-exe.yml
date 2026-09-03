@@ -1,12 +1,12 @@
-name: Build Windows EXE
+name: Build Windows EXEs
 
-# Runs on every push to main, and can also be triggered manually from the
-# Actions tab in GitHub ("Run workflow" button).
 on:
   push:
     branches: [ "main" ]
     paths:
       - "bt_keepalive.py"
+      - "installer.py"
+      - "uninstall.py"
       - ".github/workflows/build-windows-exe.yml"
   workflow_dispatch: {}
 
@@ -26,12 +26,32 @@ jobs:
       - name: Install PyInstaller
         run: pip install pyinstaller
 
-      - name: Build EXE
+      - name: Download NSSM
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri "https://nssm.cc/release/nssm-2.24.zip" -OutFile "nssm.zip"
+          Expand-Archive -Path "nssm.zip" -DestinationPath "nssm_extracted"
+          Copy-Item "nssm_extracted\nssm-2.24\win64\nssm.exe" -Destination "nssm.exe"
+
+      - name: Build background worker EXE
         run: pyinstaller --onefile --noconsole --name bt_keepalive bt_keepalive.py
 
-      - name: Upload EXE as build artifact
+      - name: Build installer EXE (bundles worker + nssm)
+        run: pyinstaller --onefile --name bt_keepalive_installer --add-binary "dist\bt_keepalive.exe;." --add-binary "nssm.exe;." installer.py
+
+      - name: Build uninstaller EXE
+        run: pyinstaller --onefile --name bt_keepalive_uninstall uninstall.py
+
+      - name: Upload installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: bt_keepalive-windows-exe
-          path: dist/bt_keepalive.exe
+          name: bt_keepalive_installer
+          path: dist/bt_keepalive_installer.exe
+          retention-days: 30
+
+      - name: Upload uninstaller artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bt_keepalive_uninstall
+          path: dist/bt_keepalive_uninstall.exe
           retention-days: 30
